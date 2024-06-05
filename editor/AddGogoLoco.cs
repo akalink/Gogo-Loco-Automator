@@ -23,7 +23,7 @@ namespace GoGoLoco
         private static List<string> controllers;
         private static List<string> paramenu;
 
-        [MenuItem("Tools/GoGo Loco Automater", false, 0)]
+        [MenuItem("Tools/GoGo Loco Automator", false, 0)]
         public static void ShowWindow()
         {
             AddGogoLoco window = (AddGogoLoco) EditorWindow.GetWindow(typeof(AddGogoLoco));

@@ -33,7 +33,7 @@ namespace GoGoLoco
         {
             avatar = EditorGUILayout.ObjectField("avatar", avatar, typeof(object), true) as GameObject;
 
-            if (GUILayout.Button("Select Avatar is scene"))
+            if (GUILayout.Button("Select Avatar in scene"))
             {
                 var objs = Selection.gameObjects;
                 if (objs.Length < 1) return;

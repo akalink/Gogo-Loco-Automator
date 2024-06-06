@@ -41,7 +41,7 @@ namespace GoGoLoco
                 avatar = objs[0];
             }
 
-            if (GUILayout.Button("Add GoGo Loco Write Defaults"))
+            if (GUILayout.Button("Add Gogo Loco Write Defaults"))
             {
                 var descriptor = BoilerPlateGetOrAddDescriptor();
                 if (descriptor == null) return;
@@ -52,7 +52,7 @@ namespace GoGoLoco
 
             }
             
-            if (GUILayout.Button("Add GoGo Loco (not Write Defaults)"))
+            if (GUILayout.Button("Add Gogo Loco (not Write Defaults)"))
             {
                 var descriptor = BoilerPlateGetOrAddDescriptor();
                 if (descriptor == null) return;
@@ -188,7 +188,7 @@ namespace GoGoLoco
 
             try
             {
-                con = controllers.Where(c => c.Contains("TPose")).ToList()[0];
+                con = controllers.Where(c => c.Contains("Sitting")).ToList()[0];
                 descriptor.specialAnimationLayers[0].isDefault = false;
                 descriptor.specialAnimationLayers[0].animatorController =
                     AssetDatabase.LoadAssetAtPath<AnimatorController>(con);
@@ -201,7 +201,7 @@ namespace GoGoLoco
             
             try
             {
-                con = controllers.Where(c => c.Contains("Sitting")).ToList()[0];
+                con = controllers.Where(c => c.Contains("TPose")).ToList()[0];
                 descriptor.specialAnimationLayers[1].isDefault = false;
                 descriptor.specialAnimationLayers[1].animatorController =
                     AssetDatabase.LoadAssetAtPath<AnimatorController>(con);

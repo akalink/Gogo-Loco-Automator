@@ -10,5 +10,9 @@
    
 
 ### Update log
+- 0.03  
+  - Found an issue where Avatar Descriptor script got angry when added then edited immediately.
+  - Changed behavior of the descriptor checking method to only Get the descriptor.
+  - Added button for the end user to add an avatar descriptor.
 - 0.02 Fixed issue where wrong controller was placed in Sitting and Tpose (controllers swapped) slots
 - 0.01 Initial update

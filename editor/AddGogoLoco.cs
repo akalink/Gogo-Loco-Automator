@@ -250,10 +250,5 @@ namespace GoGoLoco
         }
         #endregion
 
-        static IEnumerator IEDelayEditor()
-        {
-            yield return new WaitForSeconds(1f);
-        }
-        
     }
 }

@@ -43,7 +43,8 @@ namespace GoGoLoco
 
             if (GUILayout.Button("Add Gogo Loco Write Defaults"))
             {
-                var descriptor = BoilerPlateGetOrAddDescriptor();
+                var descriptor = BoilerPlateGetDescriptor();
+                
                 if (descriptor == null) return;
 
                 BoilerPlateFindControllers(WDfolderPath);
@@ -54,12 +55,26 @@ namespace GoGoLoco
             
             if (GUILayout.Button("Add Gogo Loco (not Write Defaults)"))
             {
-                var descriptor = BoilerPlateGetOrAddDescriptor();
+                var descriptor = BoilerPlateGetDescriptor();
                 if (descriptor == null) return;
 
                 BoilerPlateFindControllers(folderPath);
 
                 BoilerPlateAddControllersAndMenus(descriptor);
+
+            }
+            
+            if (GUILayout.Button("Add Descriptor"))
+            {
+                var descriptor = avatar.GetComponent<VRCAvatarDescriptor>();
+                if (descriptor == null)
+                {
+                    avatar.AddComponent<VRCAvatarDescriptor>();
+                }
+                else
+                {
+                    Debug.Log("An avatar descriptor already exists! on this avatar");
+                }
 
             }
             GUILayout.Label("GoGo Loco created by Franda\nEditor script created by akalink\nIf you run into an issue, contact akalink" +
@@ -68,7 +83,7 @@ namespace GoGoLoco
 
         #region BoilerPlateCode
         
-        private VRCAvatarDescriptor BoilerPlateGetOrAddDescriptor()
+        private VRCAvatarDescriptor BoilerPlateGetDescriptor()
         {
             if (avatar == null) return null;
 
@@ -76,8 +91,8 @@ namespace GoGoLoco
 
             if (descriptor == null)
             {
-                avatar.AddComponent<VRCAvatarDescriptor>();
-                descriptor = avatar.GetComponent<VRCAvatarDescriptor>();
+                Debug.LogError("The is no avatar descriptor, please add one");
+                return null;
             }
 
             var anim = avatar.GetComponent<Animator>();
@@ -234,6 +249,11 @@ namespace GoGoLoco
 
         }
         #endregion
+
+        static IEnumerator IEDelayEditor()
+        {
+            yield return new WaitForSeconds(1f);
+        }
         
     }
 }

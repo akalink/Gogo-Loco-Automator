@@ -77,6 +77,38 @@ namespace GoGoLoco
                 }
 
             }
+
+            if (GUILayout.Button("Assign Eyebones"))
+            {
+                var descriptor = BoilerPlateGetDescriptor();
+                
+                if (descriptor == null) return;
+                
+                List<Transform> transforms = avatar.GetComponentsInChildren<Transform>().ToList();
+                
+                Debug.Log($"Total children are {transforms.Count}");
+
+                List<Transform> eyebones = new List<Transform>();
+                
+                foreach (Transform t in transforms)
+                {
+                    
+                    if (t.gameObject.name.ToLower().Contains("eye"))
+                    {
+                        eyebones.Add(t);
+                    }
+                }
+                
+                Debug.Log($"Total eyes are {eyebones.Count}");
+
+                descriptor.enableEyeLook = true;
+                // var e = 
+
+                descriptor.customEyeLookSettings.leftEye = eyebones.Where(e => e.gameObject.name.ToUpper().Contains("L"))
+                    .Select(e => e).Single();
+                descriptor.customEyeLookSettings.rightEye = eyebones.Where(e => e.gameObject.name.ToUpper().Contains("R"))
+                    .Select(e => e).Single();
+            }
             GUILayout.Label("GoGo Loco created by Franda\nEditor script created by akalink\nIf you run into an issue, contact akalink" +
                             "\n@mcphersonsound twitter\n akalink github"); 
         }

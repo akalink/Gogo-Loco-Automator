@@ -85,9 +85,15 @@ namespace GoGoLoco
                 if (descriptor == null) return;
 
                 Animator animator = BoilerPlateGetAnimator();
-                
-                Transform leftEyeBone = animator.GetBoneTransform(HumanBodyBones.LeftEye);
-                Transform rightEyeBone = animator.GetBoneTransform(HumanBodyBones.RightEye);
+
+                Transform leftEyeBone = null;
+                Transform rightEyeBone = null;
+
+                if (animator != null && animator.isHuman) 
+                {
+                    leftEyeBone = animator.GetBoneTransform(HumanBodyBones.LeftEye);
+                    rightEyeBone = animator.GetBoneTransform(HumanBodyBones.RightEye);
+                }
 
                 if (leftEyeBone == null || rightEyeBone == null)
                 {
@@ -105,14 +111,18 @@ namespace GoGoLoco
                     }
                 
                     Debug.Log($"Total eyes are {eyebones.Count}");
+                    if (eyebones.Count == 0)
+                    {
+                        Debug.LogWarning("There are no eye bones assigned via the animator or there isn't a name it could find in it hierarchy");
+                        return;
+                    }
 
                     descriptor.enableEyeLook = true;
-                    // var e = 
 
                     leftEyeBone = eyebones.Where(e => e.gameObject.name.ToUpper().Contains("L"))
-                        .Select(e => e).Single();
+                        .Select(e => e).SingleOrDefault();
                     rightEyeBone = eyebones.Where(e => e.gameObject.name.ToUpper().Contains("R"))
-                        .Select(e => e).Single();
+                        .Select(e => e).SingleOrDefault();
                 }
 
                 descriptor.customEyeLookSettings.leftEye = leftEyeBone;

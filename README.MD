@@ -11,7 +11,7 @@
 
 ### Update log
 - 0.04
-  - Added a button to auto assign eye bones for eye look. It uses what is assigned in the animator, and if that fails looks through the hierarchy by name.
+  - Added a button to auto assign eye bones for eye look. It uses what is assigned in the animator, and if that fails, looks through the hierarchy by name.
 - 0.03  
   - Found an issue where Avatar Descriptor script got angry when added then edited immediately.
   - Changed behavior of the descriptor checking method to only Get the descriptor.

@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.Windows;
 using VRC.SDK3.Avatars.Components;
 using VRC.SDK3.Avatars.ScriptableObjects;
+using VRC.SDKBase;
 using Directory = System.IO.Directory;
 
 
@@ -40,6 +41,8 @@ namespace GoGoLoco
 
                 avatar = objs[0];
             }
+            
+            GUILayout.Space(20);
 
             if (GUILayout.Button("Add Gogo Loco Write Defaults"))
             {
@@ -64,6 +67,8 @@ namespace GoGoLoco
 
             }
             
+            GUILayout.Space(10);
+            
             if (GUILayout.Button("Add Descriptor"))
             {
                 var descriptor = avatar.GetComponent<VRCAvatarDescriptor>();
@@ -83,53 +88,10 @@ namespace GoGoLoco
                 var descriptor = BoilerPlateGetDescriptor();
                 
                 if (descriptor == null) return;
-
-                Animator animator = BoilerPlateGetAnimator();
-
-                Transform leftEyeBone = null;
-                Transform rightEyeBone = null;
-
-                if (animator != null && animator.isHuman) 
-                {
-                    leftEyeBone = animator.GetBoneTransform(HumanBodyBones.LeftEye);
-                    rightEyeBone = animator.GetBoneTransform(HumanBodyBones.RightEye);
-                }
-
-                if (leftEyeBone == null || rightEyeBone == null)
-                {
-                    List<Transform> transforms = avatar.GetComponentsInChildren<Transform>().ToList();
-
-                    List<Transform> eyebones = new List<Transform>();
                 
-                    foreach (Transform t in transforms)
-                    {
-                    
-                        if (t.gameObject.name.ToLower().Contains("eye"))
-                        {
-                            eyebones.Add(t);
-                        }
-                    }
-                
-                    Debug.Log($"Total eyes are {eyebones.Count}");
-                    if (eyebones.Count == 0)
-                    {
-                        Debug.LogWarning("There are no eye bones assigned via the animator or there isn't a name it could find in it hierarchy");
-                        return;
-                    }
-
-                    descriptor.enableEyeLook = true;
-
-                    leftEyeBone = eyebones.Where(e => e.gameObject.name.ToUpper().Contains("L"))
-                        .Select(e => e).SingleOrDefault();
-                    rightEyeBone = eyebones.Where(e => e.gameObject.name.ToUpper().Contains("R"))
-                        .Select(e => e).SingleOrDefault();
-                }
-
-                descriptor.customEyeLookSettings.leftEye = leftEyeBone;
-                descriptor.customEyeLookSettings.rightEye = rightEyeBone;
-
-
+                AssignEyeBones(descriptor);
             }
+            
             GUILayout.Label("GoGo Loco created by Franda\nEditor script created by akalink\nIf you run into an issue, contact akalink" +
                             "\n@mcphersonsound twitter\n akalink github"); 
         }
@@ -309,6 +271,54 @@ namespace GoGoLoco
 
         }
         #endregion
+
+        private void AssignEyeBones(VRCAvatarDescriptor descriptor)
+        {
+            Animator animator = BoilerPlateGetAnimator();
+
+            Transform leftEyeBone = null;
+            Transform rightEyeBone = null;
+
+            if (animator != null && animator.isHuman) 
+            {
+                leftEyeBone = animator.GetBoneTransform(HumanBodyBones.LeftEye);
+                rightEyeBone = animator.GetBoneTransform(HumanBodyBones.RightEye);
+            }
+
+            if (leftEyeBone == null || rightEyeBone == null)
+            {
+                List<Transform> transforms = avatar.GetComponentsInChildren<Transform>().ToList();
+
+                List<Transform> eyebones = new List<Transform>();
+                
+                foreach (Transform t in transforms)
+                {
+                    
+                    if (t.gameObject.name.ToLower().Contains("eye"))
+                    {
+                        eyebones.Add(t);
+                    }
+                }
+                
+                Debug.Log($"Total eyes are {eyebones.Count}");
+                if (eyebones.Count == 0)
+                {
+                    Debug.LogWarning("There are no eye bones assigned via the animator or there isn't a name it could find in it hierarchy");
+                    return;
+                }
+
+                descriptor.enableEyeLook = true;
+
+                leftEyeBone = eyebones.Where(e => e.gameObject.name.ToUpper().Contains("L"))
+                    .Select(e => e).SingleOrDefault();
+                rightEyeBone = eyebones.Where(e => e.gameObject.name.ToUpper().Contains("R"))
+                    .Select(e => e).SingleOrDefault();
+            }
+
+            descriptor.customEyeLookSettings.leftEye = leftEyeBone;
+            descriptor.customEyeLookSettings.rightEye = rightEyeBone;
+        }
+        
 
     }
 }

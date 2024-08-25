@@ -10,6 +10,8 @@
    
 
 ### Update log
+- 0.05 
+  - Added a button to auto assign the blink blend shape. There is unusual behavior where the first attempt cannot assign the index. The second attempt works fine.
 - 0.04
   - Added a button to auto assign eye bones for eye look. It uses what is assigned in the animator, and if that fails, looks through the hierarchy by name.
 - 0.03  

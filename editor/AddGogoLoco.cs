@@ -88,8 +88,28 @@ namespace GoGoLoco
                 var descriptor = BoilerPlateGetDescriptor();
                 
                 if (descriptor == null) return;
+
+                if (!descriptor.enableEyeLook)
+                {
+                    descriptor.enableEyeLook = true;
+                }
                 
                 AssignEyeBones(descriptor);
+            }
+
+            if (GUILayout.Button("Assign Blink Blendshape"))
+            {
+                var descriptor = BoilerPlateGetDescriptor();
+                
+                if (descriptor == null) return;
+
+                if (!descriptor.enableEyeLook)
+                {
+                    descriptor.enableEyeLook = true;
+                }
+                
+                AssignBlink(descriptor);
+                
             }
             
             GUILayout.Label("GoGo Loco created by Franda\nEditor script created by akalink\nIf you run into an issue, contact akalink" +
@@ -318,7 +338,70 @@ namespace GoGoLoco
             descriptor.customEyeLookSettings.leftEye = leftEyeBone;
             descriptor.customEyeLookSettings.rightEye = rightEyeBone;
         }
-        
+
+        private void AssignBlink(VRCAvatarDescriptor descriptor)
+        {
+            Animator animator = BoilerPlateGetAnimator();
+
+            SkinnedMeshRenderer sm = null;
+            
+            // Debug.Log($"Viseme Skinned Mesh = {descriptor.VisemeSkinnedMesh}");
+
+            if (descriptor.VisemeSkinnedMesh != null)
+            {
+                sm = descriptor.VisemeSkinnedMesh;
+                
+            }
+            else
+            {
+                SkinnedMeshRenderer[] smrs = avatar.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+                for (int i = 0; i < smrs.Length; i++)
+                {
+                    if (i > 0 && smrs[i].sharedMesh.blendShapeCount > smrs[i-1].sharedMesh.blendShapeCount)
+                    {
+                        sm = smrs[i];
+                    }
+                    else
+                    {
+                        sm = smrs[i];
+                    }
+                }
+                
+            }
+            // Debug.Log($"skinned mesh renderer name is {sm.name}");
+
+            descriptor.customEyeLookSettings.eyelidType = VRCAvatarDescriptor.EyelidType.Blendshapes;
+
+            descriptor.customEyeLookSettings.eyelidsSkinnedMesh = sm;
+
+            Mesh m = sm.sharedMesh;
+            
+            int bsi = 0;
+
+            for (int i = 0; i < m.blendShapeCount; i++)
+            {
+                if (m.GetBlendShapeName(i).ToLower().Equals("blink") || m.GetBlendShapeName(i).ToLower().Equals("ブリンク"))
+                {
+                    Debug.Log("Found it");
+                    bsi = i;
+                    break;
+                }
+            }
+
+            if (descriptor.customEyeLookSettings.eyelidsBlendshapes.Length > 0)
+            {
+                descriptor.customEyeLookSettings.eyelidsBlendshapes[0] = bsi;
+                descriptor.customEyeLookSettings.eyelidsBlendshapes[1] = -1;
+                descriptor.customEyeLookSettings.eyelidsBlendshapes[2] = -1;
+            }
+            else
+            {
+                Debug.LogWarning("Custom Eye look settings does not have a length yet, click the assign blink button again");
+            }
+
+
+
+        }
 
     }
 }

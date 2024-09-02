@@ -4,17 +4,18 @@
  1. Import the package to your VRChat avatar unity project.
  2. If not already, import Gogo Loco to the same project
 
-### How to add Gogo Loco easily
+### How to easily add Gogo Loco to your avatar
  1. Under the Window options, click "Tools" -> "Gogo Loco Automator"
  2. Select your avatar and click "Select Avatar in scene" or drag your avatar into the avatar slot.
  3. Click "Add Gogo Loco" with or without Write Defaults (personal preference) to auto add Gogo loco
+ 4. Please note, this will replace any pre-existing custom animations.
    
-### How to use Gogo Loco Automator to add Simulated Eye Tracking to your avatar
+### How to add Simulated Eye Tracking to your avatar
  1. Under the Window options, click "Tools" -> "Gogo Loco Automator"
  2. Select your avatar and click "Select Avatar in scene" or drag your avatar into the avatar slot.
  3. Click "Assign Eyebones".
 
-### How to use Gogo Loco Automator to add Automatic blinking to your avatar
+### How to add Automatic blinking to your avatar
  1. Under the Window options, click "Tools" -> "Gogo Loco Automator"
  2. Select your avatar and click "Select Avatar in scene" or drag your avatar into the avatar slot.
  3. Click "Assign Blink Blendshape". You may get a popup dialog telling you to click the button again, click the button again.

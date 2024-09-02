@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
@@ -11,6 +12,7 @@ using VRC.SDK3.Avatars.Components;
 using VRC.SDK3.Avatars.ScriptableObjects;
 using VRC.SDKBase;
 using Directory = System.IO.Directory;
+// using Unity.EditorCoroutines.Editor;
 
 
 namespace GoGoLoco
@@ -88,8 +90,28 @@ namespace GoGoLoco
                 var descriptor = BoilerPlateGetDescriptor();
                 
                 if (descriptor == null) return;
+
+                if (!descriptor.enableEyeLook)
+                {
+                    descriptor.enableEyeLook = true;
+                }
                 
                 AssignEyeBones(descriptor);
+            }
+
+            if (GUILayout.Button("Assign Blink Blendshape"))
+            {
+                var descriptor = BoilerPlateGetDescriptor();
+                
+                if (descriptor == null) return;
+
+                if (!descriptor.enableEyeLook)
+                {
+                    descriptor.enableEyeLook = true;
+                }
+                
+                AssignBlink(descriptor);
+                
             }
             
             GUILayout.Label("GoGo Loco created by Franda\nEditor script created by akalink\nIf you run into an issue, contact akalink" +
@@ -109,8 +131,6 @@ namespace GoGoLoco
                 Debug.LogError("The is no avatar descriptor, please add one");
                 return null;
             }
-
-            var anim = BoilerPlateGetAnimator();
 
             return descriptor;
         }
@@ -318,7 +338,70 @@ namespace GoGoLoco
             descriptor.customEyeLookSettings.leftEye = leftEyeBone;
             descriptor.customEyeLookSettings.rightEye = rightEyeBone;
         }
-        
+
+        private void AssignBlink(VRCAvatarDescriptor descriptor)
+        {
+            Debug.Log("Fake break");
+            Animator animator = BoilerPlateGetAnimator();
+
+            SkinnedMeshRenderer sm = null;
+
+            if (descriptor.VisemeSkinnedMesh != null)
+            {
+                sm = descriptor.VisemeSkinnedMesh;
+            }
+            else
+            {
+                SkinnedMeshRenderer[] smrs = avatar.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+                for (int i = 0; i < smrs.Length; i++)
+                {
+                    if (i > 0 && smrs[i].sharedMesh.blendShapeCount > smrs[i-1].sharedMesh.blendShapeCount)
+                    {
+                        sm = smrs[i];
+                    }
+                    else
+                    {
+                        sm = smrs[i];
+                    }
+                }
+            }
+            
+            descriptor.customEyeLookSettings.eyelidType = VRCAvatarDescriptor.EyelidType.Blendshapes;
+            descriptor.customEyeLookSettings.eyelidsSkinnedMesh = sm;
+
+            if (sm == null)
+            {
+                Debug.LogError("Could not find a skinned mesh as part of this avatar.");
+            }
+
+            Mesh m = sm.sharedMesh;
+            
+            int bsI = 0;
+
+            for (int i = 0; i < m.blendShapeCount; i++)
+            {
+                if (m.GetBlendShapeName(i).ToLower().Equals("blink") || m.GetBlendShapeName(i).ToLower().Equals("ブリンク"))
+                {
+                    bsI = i;
+                    break;
+                } else if (i == m.blendShapeCount - 1)
+                {
+                    Debug.LogWarning("Could not find a blendshape named blink");
+                    bsI = -1;
+                }
+            }
+
+            if (descriptor.customEyeLookSettings.eyelidsBlendshapes.Length < 1)
+            {
+                EditorUtility.DisplayDialog("You're not in trouble", "Assign Blink Blendshape again\n" +
+                                                                     "Assignments might be incorrect", "ok", "cancel");
+            }
+            
+            descriptor.customEyeLookSettings.eyelidsBlendshapes[0] = bsI;
+            descriptor.customEyeLookSettings.eyelidsBlendshapes[1] = -1;
+            descriptor.customEyeLookSettings.eyelidsBlendshapes[2] = -1;
+            
+        }
 
     }
 }

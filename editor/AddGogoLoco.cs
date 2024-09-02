@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
@@ -11,6 +12,7 @@ using VRC.SDK3.Avatars.Components;
 using VRC.SDK3.Avatars.ScriptableObjects;
 using VRC.SDKBase;
 using Directory = System.IO.Directory;
+// using Unity.EditorCoroutines.Editor;
 
 
 namespace GoGoLoco
@@ -129,8 +131,6 @@ namespace GoGoLoco
                 Debug.LogError("The is no avatar descriptor, please add one");
                 return null;
             }
-
-            var anim = BoilerPlateGetAnimator();
 
             return descriptor;
         }
@@ -341,16 +341,14 @@ namespace GoGoLoco
 
         private void AssignBlink(VRCAvatarDescriptor descriptor)
         {
+            Debug.Log("Fake break");
             Animator animator = BoilerPlateGetAnimator();
 
             SkinnedMeshRenderer sm = null;
-            
-            // Debug.Log($"Viseme Skinned Mesh = {descriptor.VisemeSkinnedMesh}");
 
             if (descriptor.VisemeSkinnedMesh != null)
             {
                 sm = descriptor.VisemeSkinnedMesh;
-                
             }
             else
             {
@@ -366,41 +364,43 @@ namespace GoGoLoco
                         sm = smrs[i];
                     }
                 }
-                
             }
-            // Debug.Log($"skinned mesh renderer name is {sm.name}");
-
+            
             descriptor.customEyeLookSettings.eyelidType = VRCAvatarDescriptor.EyelidType.Blendshapes;
-
             descriptor.customEyeLookSettings.eyelidsSkinnedMesh = sm;
+
+            if (sm == null)
+            {
+                Debug.LogError("Could not find a skinned mesh as part of this avatar.");
+            }
 
             Mesh m = sm.sharedMesh;
             
-            int bsi = 0;
+            int bsI = 0;
 
             for (int i = 0; i < m.blendShapeCount; i++)
             {
                 if (m.GetBlendShapeName(i).ToLower().Equals("blink") || m.GetBlendShapeName(i).ToLower().Equals("ブリンク"))
                 {
-                    Debug.Log("Found it");
-                    bsi = i;
+                    bsI = i;
                     break;
+                } else if (i == m.blendShapeCount - 1)
+                {
+                    Debug.LogWarning("Could not find a blendshape named blink");
+                    bsI = -1;
                 }
             }
 
-            if (descriptor.customEyeLookSettings.eyelidsBlendshapes.Length > 0)
+            if (descriptor.customEyeLookSettings.eyelidsBlendshapes.Length < 1)
             {
-                descriptor.customEyeLookSettings.eyelidsBlendshapes[0] = bsi;
-                descriptor.customEyeLookSettings.eyelidsBlendshapes[1] = -1;
-                descriptor.customEyeLookSettings.eyelidsBlendshapes[2] = -1;
+                EditorUtility.DisplayDialog("You're not in trouble", "Assign Blink Blendshape again\n" +
+                                                                     "Assignments might be incorrect", "ok", "cancel");
             }
-            else
-            {
-                Debug.LogWarning("Custom Eye look settings does not have a length yet, click the assign blink button again");
-            }
-
-
-
+            
+            descriptor.customEyeLookSettings.eyelidsBlendshapes[0] = bsI;
+            descriptor.customEyeLookSettings.eyelidsBlendshapes[1] = -1;
+            descriptor.customEyeLookSettings.eyelidsBlendshapes[2] = -1;
+            
         }
 
     }
